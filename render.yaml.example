@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: api-sentinel-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        value: jdbc:postgresql://YOUR_POSTGRES_HOST:5432/YOUR_DATABASE
+      - key: DATABASE_USERNAME
+        value: YOUR_DATABASE_USER
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_URL
+        value: https://your-frontend.example.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://your-frontend.example.com
+      - key: AI_PROVIDER
+        value: mock
+      - key: AI_OPENAI_API_KEY
+        sync: false

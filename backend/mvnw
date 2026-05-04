@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -e
+BASE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+MAVEN_VERSION="3.9.9"
+WRAPPER_DIR="$BASE_DIR/.mvn/wrapper"
+MAVEN_HOME="$WRAPPER_DIR/apache-maven-$MAVEN_VERSION"
+MAVEN_ZIP="$WRAPPER_DIR/apache-maven-$MAVEN_VERSION-bin.zip"
+
+if [ ! -x "$MAVEN_HOME/bin/mvn" ]; then
+  mkdir -p "$WRAPPER_DIR"
+  if [ ! -f "$MAVEN_ZIP" ]; then
+    if command -v curl >/dev/null 2>&1; then
+      curl -fsSL "https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.zip" -o "$MAVEN_ZIP"
+    else
+      wget -O "$MAVEN_ZIP" "https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.zip"
+    fi
+  fi
+  unzip -o "$MAVEN_ZIP" -d "$WRAPPER_DIR" >/dev/null
+fi
+
+exec "$MAVEN_HOME/bin/mvn" "$@"
