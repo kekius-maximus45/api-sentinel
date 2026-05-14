@@ -1,6 +1,6 @@
 # API Sentinel
 
-API Sentinel is a backend-focused API monitoring SaaS project built as a modular monolith: Spring Boot 3.5, PostgreSQL, scheduled health checks, incident automation, webhook alerts, public status pages, and a practical MCP/AI incident assistant. The frontend is a Vite + React + TypeScript control plane for the same APIs.
+API Sentinel is a backend-focused API monitoring SaaS project built as a modular monolith: Spring Boot 3.5, PostgreSQL, scheduled health checks, incident automation, webhook alerts, public status pages, and a practical MCP/AI incident assistant. The frontend is a Vite + React + TypeScript control plane for the same APIs and Backend.
 
 It is designed as a resume-grade backend project: the core value is in API design, persistence, scheduled workers, incident automation, authorization, metrics, and operational AI tooling rather than a landing-page UI.
 
