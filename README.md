@@ -19,7 +19,7 @@ flowchart LR
 ## What Is Implemented
 
 - JWT register/login/me flow with BCrypt password storage.
-- Organization, project, and membership scoping.
+- Organization, project, and membership scoping
 - Monitor CRUD, manual checks, scheduled async checks, uptime/latency metrics.
 - Incident auto-open/auto-resolve with timeline events.
 - Webhook alert rules and notification channels.
