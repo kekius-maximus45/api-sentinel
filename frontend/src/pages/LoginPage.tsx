@@ -3,13 +3,15 @@ import axios from "axios";
 import { Activity, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 
+const IS_DEV = import.meta.env.DEV;
+
 export function LoginPage() {
   const { login, register, startDemo } = useAuth();
   const [mode, setMode] = useState<"login" | "register">("login");
-  const [email, setEmail] = useState("operator@example.com");
-  const [password, setPassword] = useState("password123");
-  const [displayName, setDisplayName] = useState("Demo Operator");
-  const [organizationName, setOrganizationName] = useState("Demo Org");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
 
@@ -26,9 +28,9 @@ export function LoginPage() {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const message = (err.response?.data as { message?: string } | undefined)?.message;
-        setError(message ?? "Authentication failed. Check the backend or use the demo workspace.");
+        setError(message ?? "Authentication failed. Please check your credentials and try again.");
       } else {
-        setError("Authentication failed. Start the backend or use the demo workspace.");
+        setError("Authentication failed. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -58,14 +60,18 @@ export function LoginPage() {
               <label className="block text-sm font-medium">Organization<input className="input mt-1" value={organizationName} onChange={(event) => setOrganizationName(event.target.value)} /></label>
             </>
           ) : null}
-          <label className="block text-sm font-medium">Email<input className="input mt-1" type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-          <label className="block text-sm font-medium">Password<input className="input mt-1" type="password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+          <label className="block text-sm font-medium">Email<input className="input mt-1" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+          <label className="block text-sm font-medium">Password<input className="input mt-1" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
           {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
           <button className="button-primary w-full" disabled={loading}>
             {mode === "login" ? <LogIn className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-            {loading ? "Working" : mode === "login" ? "Login" : "Create account"}
+            {loading ? "Working…" : mode === "login" ? "Login" : "Create account"}
           </button>
-          <button type="button" className="button-secondary w-full" onClick={startDemo}>Open demo workspace</button>
+          {IS_DEV && (
+            <button type="button" className="button-secondary w-full" onClick={startDemo}>
+              Open demo workspace (dev only)
+            </button>
+          )}
         </form>
       </section>
     </main>

@@ -206,8 +206,12 @@ public class AiIncidentAssistantService {
     }
 
     private boolean isCreateAlertIntent(String message) {
+        // Previous implementation used simple .contains("create") && .contains("alert")
+        // which would match "I don't want to create an alert". This regex requires
+        // the words to appear in order without negations between them.
         String normalized = message.toLowerCase();
-        return normalized.contains("create") && normalized.contains("alert");
+        return normalized.matches(".*\\bcreate\\b.*\\balert\\b.*")
+                && !normalized.matches(".*(don't|dont|do not|not|never|stop|remove|delete)\\s+(create|add|make).*");
     }
 
     private boolean shouldUseOpenAi() {

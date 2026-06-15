@@ -20,6 +20,8 @@ spring:
         enabled: false
 
 api-sentinel:
+  jwt:
+    secret: local-development-secret-for-api-sentinel-only-32-chars
   ai:
     provider: mock
 

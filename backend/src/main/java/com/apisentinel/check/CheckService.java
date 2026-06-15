@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class CheckService {
@@ -40,10 +41,19 @@ public class CheckService {
         return executeAndPersist(monitor);
     }
 
+    // @Async must NOT be combined with @Transactional on the same method —
+    // Spring's proxy chain only applies one of the two interceptors when called
+    // from outside the bean. The transactional work is delegated to a separate
+    // @Transactional method so both proxies fire correctly.
     @Async
+    public CompletableFuture<Void> runScheduled(UUID monitorId) {
+        monitorRepository.findById(monitorId).ifPresent(this::runInTransaction);
+        return CompletableFuture.completedFuture(null);
+    }
+
     @Transactional
-    public void runScheduled(UUID monitorId) {
-        monitorRepository.findById(monitorId).ifPresent(this::executeAndPersist);
+    public void runInTransaction(Monitor monitor) {
+        executeAndPersist(monitor);
     }
 
     private MonitorDtos.CheckResponse executeAndPersist(Monitor monitor) {

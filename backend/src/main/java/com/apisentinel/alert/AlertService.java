@@ -12,6 +12,7 @@ import com.apisentinel.organization.AccessControlService;
 import com.apisentinel.project.Project;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -133,6 +134,10 @@ public class AlertService {
         sendWebhook(channel, payload);
     }
 
+    // Dispatching webhooks synchronously inside the check transaction meant
+    // a slow or down webhook receiver would delay every monitor check by up to 5 s.
+    // Running it on a separate thread decouples delivery from check latency.
+    @Async
     public void dispatch(Monitor monitor, Incident incident, AlertCondition condition, Integer latencyMs) {
         List<AlertRule> rules = alertRuleRepository.findAllByProjectIdAndEnabledTrue(monitor.getProject().getId());
         for (AlertRule rule : rules) {

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+// In production (Vercel), the frontend is proxied to the backend via vercel.json rewrites,
+// so the base URL is an empty string (same origin). In local dev, point at the backend port.
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8080"
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? ""
 });
 
 api.interceptors.request.use((config) => {
@@ -11,6 +13,20 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Auto-clear stale credentials on 401 so the user is sent back to login
+// rather than seeing a broken dashboard.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      localStorage.removeItem("api-sentinel-token");
+      localStorage.removeItem("api-sentinel-auth");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
 export async function withFallback<T>(request: Promise<{ data: T }>, fallback: T): Promise<T> {
   try {
