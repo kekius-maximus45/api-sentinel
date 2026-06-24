@@ -21,6 +21,8 @@ spring:
     open-in-view: false
   data:
     redis:
+      repositories:
+        enabled: false
       url: ${REDIS_URL:redis://localhost:6379}
       lettuce:
         pool:
@@ -40,6 +42,9 @@ spring:
           enabled: true
 
 management:
+  health:
+    redis:
+      enabled: ${MANAGEMENT_HEALTH_REDIS_ENABLED:false}
   endpoints:
     web:
       exposure:

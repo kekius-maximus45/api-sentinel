@@ -6,6 +6,8 @@ services:
     plan: free
     healthCheckPath: /actuator/health
     envVars:
+      - key: PORT
+        value: 8080
       - key: DATABASE_URL
         value: jdbc:postgresql://YOUR_POSTGRES_HOST:5432/YOUR_DATABASE
       - key: DATABASE_USERNAME
@@ -22,5 +24,5 @@ services:
         value: mock
       - key: AI_OPENAI_API_KEY
         sync: false
-      - key: REDIS_URL
-        sync: false
+      - key: MANAGEMENT_HEALTH_REDIS_ENABLED
+        value: false
