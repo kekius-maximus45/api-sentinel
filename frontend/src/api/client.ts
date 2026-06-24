@@ -2,8 +2,10 @@ import axios from "axios";
 
 // In production (Vercel), the frontend is proxied to the backend via vercel.json rewrites,
 // so the base URL is an empty string (same origin). In local dev, point at the backend port.
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/+$/, "");
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? ""
+  baseURL: API_BASE_URL
 });
 
 api.interceptors.request.use((config) => {
